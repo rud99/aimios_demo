@@ -12,10 +12,6 @@
             "url": "https://packages.aimeos.org/aimeoscom"
         },
         {
-            "type": "composer",
-            "url": "https://packages.aimeos.org/aimeoscom"
-        },
-        {
             "type": "path",
             "url": "packages/*"
         }
@@ -25,14 +21,14 @@
         "composer-runtime-api": "^2.1",
         "aimeos-extensions/ipay": "dev-master",
         "aimeos/ai-cms-grapesjs": "2021.10.*",
-        "aimeos/ai-payments": "^2021.10",
         "aimeos/aimeos-laravel": "2021.10.*",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.54",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "laravel/ui": "^3.0"
+        "laravel/ui": "^3.0",
+        "zgabievi/laravel-ipay": "^0.2.4"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
