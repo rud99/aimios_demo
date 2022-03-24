@@ -1,0 +1,22 @@
+{
+	"projectName": "ipay",
+	"licenseText": "proprietary",
+	"pkgs": [{
+		"name": "ipay CSS",
+		"file": "ipay.css",
+		"isDebug": true,
+		"fileIncludes": [{
+			"text": "custom.css",
+			"path": "themes/"
+		}]
+	}, {
+		"name": "ipay JS",
+		"file": "ipay.js",
+		"isDebug": true,
+		"fileIncludes": [{
+			"text": "custom.js",
+			"path": "js/"
+		}]
+	}],
+	"resources" : []
+}
