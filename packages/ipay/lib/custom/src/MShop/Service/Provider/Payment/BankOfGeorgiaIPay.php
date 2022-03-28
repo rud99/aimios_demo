@@ -40,6 +40,7 @@ class BankOfGeorgiaIPay extends \Aimeos\MShop\Service\Provider\Payment\Base
 
         if (isset($response->status) && $response->status === CheckoutStatus::Created) {
             $order->setPaymentStatus(\Aimeos\MShop\Order\Item\Base::PAY_PENDING);
+            $order->set('transaction_id', $response->order_id);
             $this->saveOrder($order);
 
             if (isset($response->links)) {

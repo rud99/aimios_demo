@@ -1,6 +1,6 @@
 <?php
 
-$tableName = 'mshop_order_base';
+$tableName = 'mshop_order';
 
 return [
     'table' => [
@@ -8,7 +8,7 @@ return [
 
             $table = $schema->getTable($tableName);
             $table->addColumn('transaction_id', 'string', ['length' => 256, 'notnull' => false]);
-
+            $table->addIndex( ['transaction_id'],'idx_transaction_id' );
             return $schema;
         },
     ],
