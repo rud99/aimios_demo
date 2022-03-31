@@ -93,6 +93,11 @@ class BankOfGeorgiaIPay extends \Aimeos\MShop\Service\Provider\Payment\Base
         return true;
     }
 
+    public function refund(\Aimeos\MShop\Order\Item\Iface $order): \Aimeos\MShop\Order\Item\Iface
+    {
+
+    }
+
     private static function convertToCents($price)
     {
         return (int)($price * 100);
