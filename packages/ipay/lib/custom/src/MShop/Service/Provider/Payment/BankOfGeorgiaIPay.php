@@ -9,17 +9,22 @@ use Zorb\IPay\Enums\CheckoutStatus;
 class BankOfGeorgiaIPay extends \Aimeos\MShop\Service\Provider\Payment\Base
     implements \Aimeos\MShop\Service\Provider\Payment\Iface
 {
-    public function process( \Aimeos\MShop\Order\Item\Iface $order,
-                             array $params = [] ) : ?\Aimeos\MShop\Common\Helper\Form\Iface
+    private $statuses = [
+        'CREATED' => \Aimeos\MShop\Order\Item\Base::PAY_PENDING,
+        'VIEWED' => \Aimeos\MShop\Order\Item\Base::PAY_PENDING,
+        'REJECTED' => \Aimeos\MShop\Order\Item\Base::PAY_REFUSED,
+    ];
+
+    public function process(\Aimeos\MShop\Order\Item\Iface $order,
+                            array $params = []): ?\Aimeos\MShop\Common\Helper\Form\Iface
     {
         $items = [];
 
-        $orderBaseItem = $this->getOrderBase( $order->getBaseId(), \Aimeos\MShop\Order\Item\Base\Base::PARTS_ALL );
+        $orderBaseItem = $this->getOrderBase($order->getBaseId(), \Aimeos\MShop\Order\Item\Base\Base::PARTS_ALL);
         $orderPrice = self::convertToCents($orderBaseItem->getPrice()->getValue());
-        $orderCost =  self::convertToCents($orderBaseItem->getPrice()->getCosts());
+        $orderCost = self::convertToCents($orderBaseItem->getPrice()->getCosts());
 
-        foreach( $orderBaseItem->getProducts() as $product )
-        {
+        foreach ($orderBaseItem->getProducts() as $product) {
             $price = $product->getPrice();
             $productId = $product->getId();
             $productName = $product->getName();
@@ -36,10 +41,10 @@ class BankOfGeorgiaIPay extends \Aimeos\MShop\Service\Provider\Payment\Base
 //        }
 
         $response = IPay::checkout(Intent::Capture, $order->getId(), $units, $items);
-//        dump($response);
+//        dump($response);die;
 
         if (isset($response->status) && $response->status === CheckoutStatus::Created) {
-            $order->setPaymentStatus(\Aimeos\MShop\Order\Item\Base::PAY_PENDING);
+            $order->setPaymentStatus($this->statuses[$response->status]);
             $order->set('transaction_id', $response->order_id);
             $this->saveOrder($order);
 
@@ -58,8 +63,38 @@ class BankOfGeorgiaIPay extends \Aimeos\MShop\Service\Provider\Payment\Base
         }
     }
 
+    public function updateAsync(): bool
+    {
+        $manager = \Aimeos\MShop::create($this->getContext(), 'order');
+        $search = $manager->filter(true);
+
+        $expr = [
+            $search->compare('==', 'order.statuspayment', [
+                \Aimeos\MShop\Order\Item\Base::PAY_UNFINISHED,
+                \Aimeos\MShop\Order\Item\Base::PAY_PENDING,
+                \Aimeos\MShop\Order\Item\Base::PAY_AUTHORIZED]),
+            $search->compare('!=', 'transaction_id', null),
+        ];
+        $search->setConditions($search->and($expr));
+
+        $items = $manager->search($search);
+
+        if ($items) {
+            foreach ($items as $item) {
+                $transactionId = $item->get('transaction_id');
+                $response = IPay::orderStatus($transactionId);
+                $status = $this->statuses[$response->status];
+//                $order = $this->getOrder($item->getId());
+                $item->setStatusPayment($status);
+                $this->saveOrder($item);
+            }
+        }
+
+        return true;
+    }
+
     private static function convertToCents($price)
     {
-        return (int) ($price * 100);
+        return (int)($price * 100);
     }
 }
