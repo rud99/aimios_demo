@@ -1,0 +1,22 @@
+{
+	"projectName": "tbc-installment",
+	"licenseText": "proprietary",
+	"pkgs": [{
+		"name": "tbc-installment CSS",
+		"file": "tbc-installment.css",
+		"isDebug": true,
+		"fileIncludes": [{
+			"text": "custom.css",
+			"path": "themes/"
+		}]
+	}, {
+		"name": "tbc-installment JS",
+		"file": "tbc-installment.js",
+		"isDebug": true,
+		"fileIncludes": [{
+			"text": "custom.js",
+			"path": "js/"
+		}]
+	}],
+	"resources" : []
+}
