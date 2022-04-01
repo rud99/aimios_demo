@@ -20,7 +20,7 @@
         "php": "^7.3||^8.0",
         "composer-runtime-api": "^2.1",
         "aimeos-extensions/ipay": "dev-master",
-        "aimeos-extensions/tbcpay": "dev-master",
+        "aimeos-extensions/tbc-installment": "dev-master",
         "aimeos/ai-cms-grapesjs": "2021.10.*",
         "aimeos/aimeos-laravel": "2021.10.*",
         "fruitcake/laravel-cors": "^2.0",
